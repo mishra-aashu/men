@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
 import OtherUserProfileScreen from '../screens/Profile/OtherUserProfileScreen';
+import ProfileMenuScreen from '../screens/Profile/ProfileMenuScreen';
 import SavedPostsScreen from '../screens/Profile/SavedPostsScreen';
 import MyPostsScreen from '../screens/Profile/MyPostsScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
@@ -44,6 +45,7 @@ export default function ProfileStackNavigator() {
       }}
     >
       <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'PROFILE' }} />
+      <Stack.Screen name="ProfileMenu" component={ProfileMenuScreen} options={{ title: 'PROFILE OPTIONS' }} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'EDIT PROFILE' }} />
       <Stack.Screen name="OtherUserProfile" component={OtherUserProfileScreen} options={{ title: 'CONTRIBUTOR' }} />
       <Stack.Screen name="SavedPosts" component={SavedPostsScreen} options={{ title: 'BOOKMARKED' }} />
