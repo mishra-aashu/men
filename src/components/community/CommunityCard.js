@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../common/Button';
@@ -22,8 +22,12 @@ export default function CommunityCard({ community, isJoined, onJoinPress, onPres
       activeOpacity={0.8}
     >
       <View style={styles.header}>
-        <View style={[styles.iconContainer, { backgroundColor: colors.surfaceLight, borderRadius: spacing.borderRadius.xs }]}>
-          <MaterialCommunityIcons name={community.icon || 'chat'} size={24} color={colors.accent} />
+        <View style={[styles.iconContainer, { backgroundColor: colors.surfaceLight, borderRadius: 22, overflow: 'hidden' }]}>
+          {community.image ? (
+            <Image source={{ uri: community.image }} style={styles.cardImage} />
+          ) : (
+            <MaterialCommunityIcons name={community.icon || 'chat'} size={24} color={colors.accent} />
+          )}
         </View>
         <View style={styles.headerText}>
           <Text style={[styles.name, { color: colors.textPrimary, fontFamily: typography.fontFamily.header, fontSize: typography.sizes.md }]}>
@@ -58,8 +62,14 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 44,
     height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  cardImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
   },
   headerText: {
     marginLeft: 12,

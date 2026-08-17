@@ -3,6 +3,7 @@ import { StyleSheet, View, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
@@ -13,8 +14,14 @@ import AuthNavigator from './src/navigation/AuthNavigator';
 import MainTabNavigator from './src/navigation/MainTabNavigator';
 import LoadingSpinner from './src/components/common/LoadingSpinner';
 
-// Inject global style to hide scrollbars on Web/Desktop
+// Inject global style & Google Fonts to hide scrollbars and load premium typography on Web/Desktop
 if (Platform.OS === 'web') {
+  // Create link tag for Google Fonts
+  const fontLink = document.createElement('link');
+  fontLink.rel = 'stylesheet';
+  fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap';
+  document.head.appendChild(fontLink);
+
   const style = document.createElement('style');
   style.textContent = `
     ::-webkit-scrollbar {
@@ -51,15 +58,17 @@ function AppContent() {
 export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <ToastProvider>
-          <AuthProvider>
-            <UserProvider>
-              <AppContent />
-            </UserProvider>
-          </AuthProvider>
-        </ToastProvider>
-      </ThemeProvider>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <UserProvider>
+                <AppContent />
+              </UserProvider>
+            </AuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

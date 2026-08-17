@@ -146,13 +146,13 @@ export default function Toast({ message, type = 'info', duration = 3000, onHide 
           {
             backgroundColor: colors.surface,
             borderColor: colors.border,
-            borderLeftColor: typeConfig.color,
           },
         ]}
       >
-        <View style={[styles.innerBg, { backgroundColor: typeConfig.color, opacity: 0.08 }]} />
+        <View style={[styles.innerBg, { backgroundColor: typeConfig.color, opacity: 0.05 }]} />
+        <View style={[styles.leftAccentBar, { backgroundColor: typeConfig.color }]} />
         <View style={styles.contentRow}>
-          <MaterialCommunityIcons name={typeConfig.icon} size={22} color={typeConfig.color} style={styles.icon} />
+          <MaterialCommunityIcons name={typeConfig.icon} size={20} color={typeConfig.color} style={styles.icon} />
           <View style={styles.textContainer}>
             <Text style={[styles.title, { color: typeConfig.color, fontFamily: typography.fontFamily.header }]}>
               {typeConfig.title}
@@ -196,21 +196,28 @@ const styles = StyleSheet.create({
     }),
   },
   container: {
-    borderRadius: 16,
+    borderRadius: 12,
     borderWidth: 1,
-    borderLeftWidth: 5,
     overflow: 'hidden',
-    minHeight: 60,
+    minHeight: 56,
     justifyContent: 'center',
   },
   innerBg: {
     ...StyleSheet.absoluteFillObject,
   },
+  leftAccentBar: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+  },
   contentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 16,
+    paddingLeft: 20,
   },
   icon: {
     marginRight: 12,
@@ -220,15 +227,16 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   title: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: '800',
     letterSpacing: 1.2,
     marginBottom: 2,
+    textTransform: 'uppercase',
   },
   message: {
-    fontSize: 13,
-    fontWeight: '500',
-    lineHeight: 17,
+    fontSize: 12.5,
+    fontWeight: '600',
+    lineHeight: 16,
   },
   closeBtn: {
     padding: 4,

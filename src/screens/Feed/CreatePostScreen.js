@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
@@ -10,16 +10,23 @@ import PostAdviceToggle from '../../components/post/PostAdviceToggle';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COMMUNITIES } from '../../utils/constants';
 
-export default function CreatePostScreen({ navigation }) {
+export default function CreatePostScreen({ navigation, route }) {
   const { colors, typography, spacing } = useTheme();
   const { addPost } = useUser();
   const { user } = useAuth();
   const toast = useToast();
 
+  const { initialCategory } = route.params || {};
   const [content, setContent] = useState('');
   const [postType, setPostType] = useState('post'); // post or advice
-  const [category, setCategory] = useState('Career');
+  const [category, setCategory] = useState(initialCategory || 'Career');
   const [isAnon, setIsAnon] = useState(user?.isAnonymous ?? true);
+
+  useEffect(() => {
+    if (route.params?.initialCategory) {
+      setCategory(route.params.initialCategory);
+    }
+  }, [route.params?.initialCategory]);
 
   const handleSubmit = () => {
     if (!content.trim()) {
@@ -30,7 +37,13 @@ export default function CreatePostScreen({ navigation }) {
     addPost(content, postType, category, isAnon, user?.username);
     setContent('');
     toast.success('Post shared successfully.');
-    navigation.navigate('HomeFeed');
+    
+    if (route.params?.initialCategory) {
+      navigation.setParams({ initialCategory: undefined });
+      navigation.goBack();
+    } else {
+      navigation.navigate('HomeFeed');
+    }
   };
 
   return (
@@ -54,41 +67,49 @@ export default function CreatePostScreen({ navigation }) {
       </View>
 
       {/* Category Tag Selector */}
-      <View style={{ marginBottom: spacing.md }}>
-        <Text style={[styles.sectionLabel, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs, marginBottom: spacing.xs }]}>
-          CIRCLE CATEGORY
-        </Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
-          {COMMUNITIES.map((c) => {
-            const isSelected = category === c.name.split(' ')[0]; // Match category prefix
-            const catName = c.name.split(' ')[0];
-            return (
-              <TouchableOpacity
-                key={c.id}
-                style={[
-                  styles.categoryChip,
-                  {
-                    backgroundColor: isSelected ? colors.yellowMuted : colors.surface,
-                    borderColor: isSelected ? colors.accent : colors.border,
-                    borderRadius: spacing.borderRadius.sm,
-                    paddingHorizontal: spacing.md,
-                    paddingVertical: spacing.sm,
-                  }
-                ]}
-                onPress={() => setCategory(catName)}
-              >
-                <Text style={{
-                  color: isSelected ? colors.accent : colors.textSecondary,
-                  fontFamily: typography.fontFamily.header,
-                  fontSize: 11,
-                }}>
-                  {catName.toUpperCase()}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
+      {route.params?.initialCategory ? (
+        <View style={[styles.lockedCategoryBadge, { backgroundColor: colors.yellowMuted, borderColor: colors.accent, padding: spacing.md, borderRadius: spacing.borderRadius.xs, marginBottom: spacing.md }]}>
+          <Text style={{ color: colors.accent, fontFamily: typography.fontFamily.header, fontSize: 12, fontWeight: '700' }}>
+            POSTING IN: {route.params.initialCategory.toUpperCase()}
+          </Text>
+        </View>
+      ) : (
+        <View style={{ marginBottom: spacing.md }}>
+          <Text style={[styles.sectionLabel, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs, marginBottom: spacing.xs }]}>
+            CIRCLE CATEGORY
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
+            {COMMUNITIES.map((c) => {
+              const isSelected = category === c.name.split(' ')[0]; // Match category prefix
+              const catName = c.name.split(' ')[0];
+              return (
+                <TouchableOpacity
+                  key={c.id}
+                  style={[
+                    styles.categoryChip,
+                    {
+                      backgroundColor: isSelected ? colors.yellowMuted : colors.surface,
+                      borderColor: isSelected ? colors.accent : colors.border,
+                      borderRadius: spacing.borderRadius.sm,
+                      paddingHorizontal: spacing.md,
+                      paddingVertical: spacing.sm,
+                    }
+                  ]}
+                  onPress={() => setCategory(catName)}
+                >
+                  <Text style={{
+                    color: isSelected ? colors.accent : colors.textSecondary,
+                    fontFamily: typography.fontFamily.header,
+                    fontSize: 11,
+                  }}>
+                    {catName.toUpperCase()}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Main Text Content */}
       <InputField
@@ -148,6 +169,11 @@ const styles = StyleSheet.create({
   },
   categoryChip: {
     borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lockedCategoryBadge: {
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },

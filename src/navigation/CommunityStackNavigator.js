@@ -40,7 +40,7 @@ export default function CommunityStackNavigator() {
       <Stack.Screen
         name="CommunityDetail"
         component={CommunityDetailScreen}
-        options={({ route }) => ({ title: route.params?.name || 'COMMUNITY' })}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ThreadDetail"

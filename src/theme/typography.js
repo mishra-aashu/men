@@ -3,12 +3,12 @@ import { Platform } from 'react-native';
 export const typography = {
   fontFamily: {
     header: Platform.select({
-      web: '"Impact", "Arial Black", sans-serif',
+      web: '"Inter", system-ui, -apple-system, sans-serif',
       ios: 'System',
-      android: 'sans-serif-condensed',
+      android: 'sans-serif-medium',
     }),
     body: Platform.select({
-      web: 'system-ui, -apple-system, sans-serif',
+      web: '"Inter", system-ui, -apple-system, sans-serif',
       ios: 'System',
       android: 'sans-serif',
     }),

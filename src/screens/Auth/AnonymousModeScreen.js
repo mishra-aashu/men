@@ -83,7 +83,7 @@ export default function AnonymousModeScreen({ navigation }) {
             activeOpacity={0.8}
           >
             <View style={styles.optionHeader}>
-              <MaterialCommunityIcons name="knight" size={24} color={!isAnon ? colors.accent : colors.textSecondary} />
+              <MaterialCommunityIcons name="shield-half-full" size={24} color={!isAnon ? colors.accent : colors.textSecondary} />
               <Text style={[styles.optionTitle, {
                 color: !isAnon ? colors.accent : colors.textPrimary,
                 fontFamily: typography.fontFamily.header,
