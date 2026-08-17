@@ -2,12 +2,14 @@ import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import PostCard from '../../components/post/PostCard';
 import EmptyState from '../../components/common/EmptyState';
 
 export default function SavedPostsScreen({ navigation }) {
   const { colors, spacing } = useTheme();
   const { posts, savedPostIds, toggleLikePost, toggleSavePost } = useUser();
+  const toast = useToast();
 
   // Filter posts that are in savedPostIds list
   const savedPosts = posts.filter((post) => savedPostIds.includes(post.id));
@@ -18,7 +20,7 @@ export default function SavedPostsScreen({ navigation }) {
       onLike={() => toggleLikePost(item.id)}
       onSave={() => toggleSavePost(item.id)}
       onCommentPress={() => navigation.navigate('PostDetail', { postId: item.id })}
-      onReportPress={() => alert('Post reported.')}
+      onReportPress={() => toast.success('Post reported.')}
       onCardPress={() => navigation.navigate('PostDetail', { postId: item.id })}
     />
   );

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import InputField from '../../components/common/InputField';
 import PostCard from '../../components/post/PostCard';
 import EmptyState from '../../components/common/EmptyState';
@@ -9,6 +10,7 @@ import EmptyState from '../../components/common/EmptyState';
 export default function SearchScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { posts, toggleLikePost, toggleSavePost } = useUser();
+  const toast = useToast();
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredPosts = posts.filter((post) => {
@@ -26,7 +28,7 @@ export default function SearchScreen({ navigation }) {
       onLike={() => toggleLikePost(item.id)}
       onSave={() => toggleSavePost(item.id)}
       onCommentPress={() => navigation.navigate('PostDetail', { postId: item.id })}
-      onReportPress={() => alert('Post reported.')}
+      onReportPress={() => toast.success('Post reported.')}
       onCardPress={() => navigation.navigate('PostDetail', { postId: item.id })}
     />
   );

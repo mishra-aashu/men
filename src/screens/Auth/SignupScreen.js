@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import { validateEmail, validatePassword } from '../../utils/validators';
@@ -9,6 +10,7 @@ import { validateEmail, validatePassword } from '../../utils/validators';
 export default function SignupScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { signup, isLoading } = useAuth();
+  const toast = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -31,7 +33,7 @@ export default function SignupScreen({ navigation }) {
       await signup(email, password);
       navigation.navigate('GenderOath'); // Redirect to onboarding oath flow
     } catch (err) {
-      alert(err.message || 'Signup failed. Please try again.');
+      toast.error(err.message || 'Signup failed. Please try again.');
     }
   };
 

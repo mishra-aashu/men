@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import Avatar from '../../components/common/Avatar';
@@ -10,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function ProfileSetupScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { onboardingState, updateOnboarding, completeOnboarding, login } = useAuth();
+  const toast = useToast();
   
   const [username, setUsername] = useState(onboardingState.anonymousMode ? 'Anonymous Member' : '');
   const [selectedAvatar, setSelectedAvatar] = useState('batman');
@@ -18,7 +20,7 @@ export default function ProfileSetupScreen({ navigation }) {
 
   const handleFinish = async () => {
     if (!onboardingState.anonymousMode && !username.trim()) {
-      alert('Please choose a nickname or go anonymous.');
+      toast.warning('Please choose a nickname or go anonymous.');
       return;
     }
     updateOnboarding({

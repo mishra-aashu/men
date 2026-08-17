@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 
 export default function CreateCommunityScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
+  const toast = useToast();
   
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
 
   const handleCreate = () => {
     if (!name.trim() || !description.trim()) {
-      alert('Fill all circles details.');
+      toast.warning('Fill all circles details.');
       return;
     }
-    alert('Proposed circle submitted. Pending moderator clearance.');
+    toast.success('Proposed circle submitted. Pending moderator clearance.');
     navigation.goBack();
   };
 

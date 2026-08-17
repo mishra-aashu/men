@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import Avatar from '../../components/common/Avatar';
@@ -9,6 +10,7 @@ import Avatar from '../../components/common/Avatar';
 export default function EditProfileScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { user, setUser } = useAuth();
+  const toast = useToast();
 
   const [username, setUsername] = useState(user?.username || '');
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || 'batman');
@@ -17,7 +19,7 @@ export default function EditProfileScreen({ navigation }) {
 
   const handleSave = () => {
     if (!username.trim()) {
-      alert('Alias cannot be empty.');
+      toast.warning('Alias cannot be empty.');
       return;
     }
     setUser((prev) => ({
@@ -25,7 +27,7 @@ export default function EditProfileScreen({ navigation }) {
       username,
       avatar: selectedAvatar,
     }));
-    alert('Mask customized successfully.');
+    toast.success('Mask customized successfully.');
     navigation.goBack();
   };
 

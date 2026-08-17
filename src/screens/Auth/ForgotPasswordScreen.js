@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import { validateEmail } from '../../utils/validators';
 
 export default function ForgotPasswordScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,7 @@ export default function ForgotPasswordScreen({ navigation }) {
     setLoading(true);
     await new Promise(resolve => setTimeout(resolve, 800));
     setLoading(false);
-    alert('If an account exists, recovery keys have been dispatched.');
+    toast.success('If an account exists, recovery keys have been dispatched.');
     navigation.navigate('Login');
   };
 

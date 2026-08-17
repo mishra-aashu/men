@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import PostCard from '../../components/post/PostCard';
 import EmptyState from '../../components/common/EmptyState';
 import { COMMUNITIES } from '../../utils/constants';
@@ -10,6 +11,7 @@ export default function CommunityDetailScreen({ route, navigation }) {
   const { communityId } = route.params || {};
   const { colors, typography, spacing } = useTheme();
   const { posts, toggleLikePost, toggleSavePost, joinedCommunityIds, toggleJoinCommunity } = useUser();
+  const toast = useToast();
 
   const community = COMMUNITIES.find((c) => c.id === communityId);
   const isJoined = joinedCommunityIds.includes(communityId);
@@ -33,7 +35,7 @@ export default function CommunityDetailScreen({ route, navigation }) {
       onLike={() => toggleLikePost(item.id)}
       onSave={() => toggleSavePost(item.id)}
       onCommentPress={() => navigation.navigate('ThreadDetail', { postId: item.id })}
-      onReportPress={() => alert('Post flagged.')}
+      onReportPress={() => toast.success('Post flagged.')}
       onCardPress={() => navigation.navigate('ThreadDetail', { postId: item.id })}
     />
   );

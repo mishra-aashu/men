@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import { validateEmail, validatePassword } from '../../utils/validators';
@@ -9,6 +10,7 @@ import { validateEmail, validatePassword } from '../../utils/validators';
 export default function LoginScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { login, isLoading } = useAuth();
+  const toast = useToast();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +30,7 @@ export default function LoginScreen({ navigation }) {
       setErrors({});
       await login(email, password);
     } catch (err) {
-      alert(err.message || 'Login failed. Please check credentials.');
+      toast.error(err.message || 'Login failed. Please check credentials.');
     }
   };
 

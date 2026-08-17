@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useToast } from '../../context/ToastContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 
 export default function VoiceNoteRecorderScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
+  const toast = useToast();
   const [isRecording, setIsRecording] = useState(false);
   const [duration, setDuration] = useState('0:00');
 
@@ -19,7 +21,7 @@ export default function VoiceNoteRecorderScreen({ navigation }) {
   };
 
   const handleSend = () => {
-    alert('Voice message disguised and dispatched.');
+    toast.success('Voice message disguised and dispatched.');
     navigation.goBack();
   };
 

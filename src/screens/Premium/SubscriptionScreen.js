@@ -2,19 +2,21 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function SubscriptionScreen() {
   const { colors, typography, spacing } = useTheme();
   const { user, setUser } = useAuth();
+  const toast = useToast();
 
   const handleSubscribe = () => {
     setUser((prev) => ({
       ...prev,
       isPremium: true,
     }));
-    alert('Welcome to the Gold Shield. Features upgraded.');
+    toast.success('Welcome to the Gold Shield. Features upgraded.');
   };
 
   const perks = [

@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ThemeProvider, useTheme } from './src/context/ThemeContext';
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { UserProvider } from './src/context/UserContext';
+import { ToastProvider } from './src/context/ToastContext';
 
 import AuthNavigator from './src/navigation/AuthNavigator';
 import MainTabNavigator from './src/navigation/MainTabNavigator';
@@ -34,11 +35,13 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-        <AuthProvider>
-          <UserProvider>
-            <AppContent />
-          </UserProvider>
-        </AuthProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <UserProvider>
+              <AppContent />
+            </UserProvider>
+          </AuthProvider>
+        </ToastProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

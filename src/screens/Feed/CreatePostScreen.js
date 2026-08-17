@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import InputField from '../../components/common/InputField';
 import PostAdviceToggle from '../../components/post/PostAdviceToggle';
@@ -13,6 +14,7 @@ export default function CreatePostScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { addPost } = useUser();
   const { user } = useAuth();
+  const toast = useToast();
 
   const [content, setContent] = useState('');
   const [postType, setPostType] = useState('post'); // post or advice
@@ -21,13 +23,13 @@ export default function CreatePostScreen({ navigation }) {
 
   const handleSubmit = () => {
     if (!content.trim()) {
-      alert('The feed is silent. Write something first.');
+      toast.warning('The feed is silent. Write something first.');
       return;
     }
 
     addPost(content, postType, category, isAnon, user?.username);
     setContent('');
-    alert('Post shared successfully.');
+    toast.success('Post shared successfully.');
     navigation.navigate('HomeFeed');
   };
 

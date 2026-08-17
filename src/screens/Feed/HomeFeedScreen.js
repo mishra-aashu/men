@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import PostCard from '../../components/post/PostCard';
 import EmptyState from '../../components/common/EmptyState';
 import StreakBadge from '../../components/moodcheckin/StreakBadge';
@@ -10,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function HomeFeedScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { posts, toggleLikePost, toggleSavePost, streakCount } = useUser();
+  const toast = useToast();
   
   const [activeFilter, setActiveFilter] = useState('all'); // all, post, advice
 
@@ -24,7 +26,7 @@ export default function HomeFeedScreen({ navigation }) {
       onLike={() => toggleLikePost(item.id)}
       onSave={() => toggleSavePost(item.id)}
       onCommentPress={() => navigation.navigate('PostDetail', { postId: item.id })}
-      onReportPress={() => alert('Post reported to moderators.')}
+      onReportPress={() => toast.success('Post reported to moderators.')}
       onCardPress={() => navigation.navigate('PostDetail', { postId: item.id })}
     />
   );

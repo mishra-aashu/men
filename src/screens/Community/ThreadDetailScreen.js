@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, KeyboardAvoidingView, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import PostCard from '../../components/post/PostCard';
 import CommentItem from '../../components/post/CommentItem';
 import InputField from '../../components/common/InputField';
@@ -12,6 +13,7 @@ export default function ThreadDetailScreen({ route, navigation }) {
   const { postId } = route.params || {};
   const { colors, typography, spacing } = useTheme();
   const { posts, toggleLikePost, toggleSavePost } = useUser();
+  const toast = useToast();
 
   const post = posts.find((p) => p.id === postId);
 
@@ -75,7 +77,7 @@ export default function ThreadDetailScreen({ route, navigation }) {
           onLike={() => toggleLikePost(post.id)}
           onSave={() => toggleSavePost(post.id)}
           onCommentPress={() => {}}
-          onReportPress={() => alert('Flagged.')}
+          onReportPress={() => toast.success('Flagged.')}
         />
 
         <Text style={[styles.sectionTitle, {

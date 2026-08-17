@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, Linking, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useToast } from '../../context/ToastContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Button from '../../components/common/Button';
 
 export default function CrisisSupportScreen() {
   const { colors, typography, spacing } = useTheme();
+  const toast = useToast();
 
   const resources = [
     { name: 'National Suicide Prevention Helpline', phone: '988', desc: 'Free, confidential support available 24/7. Text or call.' },
@@ -15,7 +17,7 @@ export default function CrisisSupportScreen() {
 
   const handleCall = (phone) => {
     Linking.openURL(`tel:${phone}`).catch(() => {
-      alert(`Could not make a call. Dial: ${phone}`);
+      toast.error(`Could not make a call. Dial: ${phone}`);
     });
   };
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
+import { useToast } from '../../context/ToastContext';
 import Button from '../../components/common/Button';
 import MoodSelector from '../../components/moodcheckin/MoodSelector';
 import StreakBadge from '../../components/moodcheckin/StreakBadge';
@@ -12,6 +13,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 export default function DailyCheckInScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { streakCount, hasCheckedInToday, checkInMood } = useUser();
+  const toast = useToast();
 
   const [selectedMood, setSelectedMood] = useState(null);
   const [selectedLabel, setSelectedLabel] = useState('');
@@ -23,11 +25,11 @@ export default function DailyCheckInScreen({ navigation }) {
 
   const handleCheckIn = () => {
     if (!selectedMood) {
-      alert('Select your current energy first.');
+      toast.warning('Select your current energy first.');
       return;
     }
     checkInMood(selectedMood, selectedLabel);
-    alert('Vibe logged. Streak secured.');
+    toast.success('Vibe logged. Streak secured.');
     navigation.goBack();
   };
 

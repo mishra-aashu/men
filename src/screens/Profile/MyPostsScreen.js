@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import PostCard from '../../components/post/PostCard';
 import EmptyState from '../../components/common/EmptyState';
 
@@ -10,6 +11,7 @@ export default function MyPostsScreen({ navigation }) {
   const { colors, spacing } = useTheme();
   const { posts, toggleLikePost, toggleSavePost } = useUser();
   const { user } = useAuth();
+  const toast = useToast();
 
   // Filter posts created by the user (matches author = 'Anonymous Member' or user's username)
   const myPosts = posts.filter(
@@ -22,7 +24,7 @@ export default function MyPostsScreen({ navigation }) {
       onLike={() => toggleLikePost(item.id)}
       onSave={() => toggleSavePost(item.id)}
       onCommentPress={() => navigation.navigate('PostDetail', { postId: item.id })}
-      onReportPress={() => alert('Post reported.')}
+      onReportPress={() => toast.success('Post reported.')}
       onCardPress={() => navigation.navigate('PostDetail', { postId: item.id })}
     />
   );
