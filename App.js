@@ -30,6 +30,10 @@ if (Platform.OS === 'web') {
     * {
       -ms-overflow-style: none;
       scrollbar-width: none;
+      outline: none;
+    }
+    *:focus {
+      outline: none !important;
     }
   `;
   document.head.appendChild(style);
