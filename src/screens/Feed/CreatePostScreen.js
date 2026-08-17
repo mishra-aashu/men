@@ -1,0 +1,161 @@
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useTheme } from '../../context/ThemeContext';
+import { useUser } from '../../context/UserContext';
+import { useAuth } from '../../context/AuthContext';
+import Button from '../../components/common/Button';
+import InputField from '../../components/common/InputField';
+import PostAdviceToggle from '../../components/post/PostAdviceToggle';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { COMMUNITIES } from '../../utils/constants';
+
+export default function CreatePostScreen({ navigation }) {
+  const { colors, typography, spacing } = useTheme();
+  const { addPost } = useUser();
+  const { user } = useAuth();
+
+  const [content, setContent] = useState('');
+  const [postType, setPostType] = useState('post'); // post or advice
+  const [category, setCategory] = useState('Career');
+  const [isAnon, setIsAnon] = useState(user?.isAnonymous ?? true);
+
+  const handleSubmit = () => {
+    if (!content.trim()) {
+      alert('The feed is silent. Write something first.');
+      return;
+    }
+
+    addPost(content, postType, category, isAnon, user?.username);
+    setContent('');
+    alert('Post shared successfully.');
+    navigation.navigate('HomeFeed');
+  };
+
+  return (
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: colors.background, padding: spacing.md }]}>
+      <Text style={[styles.title, {
+        color: colors.textPrimary,
+        fontFamily: typography.fontFamily.header,
+        fontSize: typography.sizes.xl,
+        marginBottom: spacing.md,
+        textTransform: 'uppercase',
+      }]}>
+        NEW POST
+      </Text>
+
+      {/* Post / Advice Selector */}
+      <View style={{ marginBottom: spacing.md }}>
+        <Text style={[styles.sectionLabel, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs }]}>
+          MODE
+        </Text>
+        <PostAdviceToggle value={postType} onChange={setPostType} />
+      </View>
+
+      {/* Category Tag Selector */}
+      <View style={{ marginBottom: spacing.md }}>
+        <Text style={[styles.sectionLabel, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs, marginBottom: spacing.xs }]}>
+          CIRCLE CATEGORY
+        </Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryRow}>
+          {COMMUNITIES.map((c) => {
+            const isSelected = category === c.name.split(' ')[0]; // Match category prefix
+            const catName = c.name.split(' ')[0];
+            return (
+              <TouchableOpacity
+                key={c.id}
+                style={[
+                  styles.categoryChip,
+                  {
+                    backgroundColor: isSelected ? colors.yellowMuted : colors.surface,
+                    borderColor: isSelected ? colors.accent : colors.border,
+                    borderRadius: spacing.borderRadius.sm,
+                    paddingHorizontal: spacing.md,
+                    paddingVertical: spacing.sm,
+                  }
+                ]}
+                onPress={() => setCategory(catName)}
+              >
+                <Text style={{
+                  color: isSelected ? colors.accent : colors.textSecondary,
+                  fontFamily: typography.fontFamily.header,
+                  fontSize: 11,
+                }}>
+                  {catName.toUpperCase()}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </View>
+
+      {/* Main Text Content */}
+      <InputField
+        placeholder={postType === 'post' ? "Write what is heavy in your mind... Let it go." : "What guidance or solution are you searching for?"}
+        value={content}
+        onChangeText={setContent}
+        multiline
+        numberOfLines={8}
+        inputStyle={{ height: 180, textAlignVertical: 'top' }}
+      />
+
+      {/* Anonymous Toggle Row */}
+      <TouchableOpacity
+        style={styles.anonToggle}
+        onPress={() => setIsAnon(!isAnon)}
+        activeOpacity={0.8}
+      >
+        <MaterialCommunityIcons
+          name={isAnon ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+          size={22}
+          color={isAnon ? colors.accent : colors.textSecondary}
+        />
+        <Text style={[styles.anonText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.sm, marginLeft: spacing.sm }]}>
+          SHARE ANONYMOUSLY
+        </Text>
+      </TouchableOpacity>
+
+      <Button
+        title="SHARE POST"
+        variant="primary"
+        onPress={handleSubmit}
+        style={{ marginTop: spacing.md }}
+      />
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    paddingTop: 20,
+  },
+  title: {
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+  subtitle: {
+    fontWeight: '500',
+  },
+  sectionLabel: {
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    marginBottom: 6,
+  },
+  categoryRow: {
+    gap: 8,
+  },
+  categoryChip: {
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  anonToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  anonText: {
+    fontWeight: '600',
+  },
+});
