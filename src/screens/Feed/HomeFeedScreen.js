@@ -37,7 +37,7 @@ export default function HomeFeedScreen({ navigation }) {
       <View style={[styles.header, { borderBottomColor: colors.border, paddingHorizontal: spacing.md, paddingVertical: spacing.sm }]}>
         <StreakBadge count={streakCount} />
         <View style={styles.headerActions}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile', { screen: 'DailyCheckIn' })} style={styles.actionBtn}>
+          <TouchableOpacity onPress={() => navigation.navigate('ProfileTab', { screen: 'DailyCheckIn' })} style={styles.actionBtn}>
             <MaterialCommunityIcons name="emoticon-outline" size={24} color={colors.accent} />
           </TouchableOpacity>
         </View>
