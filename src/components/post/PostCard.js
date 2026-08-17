@@ -1,16 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useNavigation } from '@react-navigation/native';
 import { useToast } from '../../context/ToastContext';
 import Avatar from '../common/Avatar';
 import PostActions from './PostActions';
+import ReportModal from '../common/ReportModal';
+import { moderationService } from '../../services/moderationService';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function PostCard({ post, onLike, onSave, onCommentPress, onReportPress, onCardPress }) {
   const { colors, typography, spacing } = useTheme();
   const navigation = useNavigation();
   const toast = useToast();
+  const [isReportModalVisible, setIsReportModalVisible] = useState(false);
+
+  const handleReportSubmit = async (reason, details) => {
+    setIsReportModalVisible(false);
+    try {
+      const response = await moderationService.reportContent('post', post.id, reason);
+      if (response.success) {
+        toast.success(`Post reported successfully: ${reason}`);
+        if (onReportPress) {
+          onReportPress();
+        }
+      } else {
+        toast.error('Failed to submit report. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Failed to submit report. Please try again.');
+    }
+  };
 
   const handleProfilePress = () => {
     if (!post.author || post.author === 'Anonymous Member' || post.avatar === 'anonymous') {
@@ -100,9 +120,16 @@ export default function PostCard({ post, onLike, onSave, onCommentPress, onRepor
         onLike={onLike}
         onComment={onCommentPress}
         onSave={onSave}
-        onReport={onReportPress}
+        onReport={() => setIsReportModalVisible(true)}
       />
     </TouchableOpacity>
+
+    {/* Report Modal System */}
+    <ReportModal
+      visible={isReportModalVisible}
+      onClose={() => setIsReportModalVisible(false)}
+      onSubmit={handleReportSubmit}
+    />
   </Animated.View>
   );
 }
