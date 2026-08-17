@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 import { useToast } from '../../context/ToastContext';
@@ -40,6 +40,8 @@ export default function OtherUserProfileScreen({ route, navigation }) {
   const insets = useSafeAreaInsets();
 
   const [activeTab, setActiveTab] = useState('posts'); // 'posts' or 'about'
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isReportVisible, setIsReportVisible] = useState(false);
 
   // Hide the default navigator header since we render a custom translucent one
   useLayoutEffect(() => {
@@ -208,10 +210,14 @@ export default function OtherUserProfileScreen({ route, navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      {/* Overlaid Translucent Back Button Header */}
+      {/* Overlaid Translucent Back & Options Button Header */}
       <View style={[styles.customHeader, { top: insets.top || 16 }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerCircleBtn}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerCircleBtn} activeOpacity={0.7}>
           <MaterialCommunityIcons name="arrow-left" size={24} color="#ffffff" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => setIsMenuVisible(true)} style={styles.headerCircleBtn} activeOpacity={0.7}>
+          <MaterialCommunityIcons name="dots-vertical" size={24} color="#ffffff" />
         </TouchableOpacity>
       </View>
 
@@ -235,6 +241,147 @@ export default function OtherUserProfileScreen({ route, navigation }) {
         ListEmptyComponent={renderEmptyOrAbout}
         contentContainerStyle={{ paddingBottom: spacing.xl }}
       />
+
+      {/* User Options Bottom Sheet Modal */}
+      <Modal
+        visible={isMenuVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsMenuVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setIsMenuVisible(false)} />
+          <View style={[styles.menuContainer, { backgroundColor: colors.surface, borderColor: colors.border, paddingBottom: insets.bottom || 16 }]}>
+            {/* Pull Handle */}
+            <View style={styles.pullHandle} />
+
+            <Text style={[styles.menuTitle, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+              u/{username}
+            </Text>
+            
+            <TouchableOpacity
+              style={styles.menuOption}
+              onPress={() => {
+                setIsMenuVisible(false);
+                navigation.navigate('ChatTab', {
+                  screen: 'ChatRoom',
+                  params: { name: username }
+                });
+              }}
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons name="message-outline" size={20} color={colors.accent} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body }]}>
+                Send Message / Chat
+              </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.textSecondary} style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuOption}
+              onPress={() => {
+                setIsMenuVisible(false);
+                toast.success(`Copied u/${username}'s profile link to clipboard!`);
+              }}
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons name="share-variant" size={20} color={colors.accent} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body }]}>
+                Share Profile
+              </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.textSecondary} style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuOption}
+              onPress={() => {
+                setIsMenuVisible(false);
+                setIsReportVisible(true);
+              }}
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons name="alert-octagon-outline" size={20} color={colors.danger} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.danger, fontFamily: typography.fontFamily.body }]}>
+                Report User
+              </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.danger} style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.menuOption}
+              onPress={() => {
+                setIsMenuVisible(false);
+                toast.success(`Successfully blocked u/${username}.`);
+              }}
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons name="account-cancel" size={20} color={colors.danger} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.danger, fontFamily: typography.fontFamily.body }]}>
+                Block User
+              </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.danger} style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.closeBtn, { borderColor: colors.border, backgroundColor: colors.background }]}
+              onPress={() => setIsMenuVisible(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.closeBtnText, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+                CLOSE
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Report User Bottom Sheet Modal */}
+      <Modal
+        visible={isReportVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setIsReportVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setIsReportVisible(false)} />
+          <View style={[styles.menuContainer, { backgroundColor: colors.surface, borderColor: colors.border, paddingBottom: insets.bottom || 16 }]}>
+            {/* Pull Handle */}
+            <View style={styles.pullHandle} />
+
+            <Text style={[styles.menuTitle, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+              REPORT u/{username}
+            </Text>
+            
+            {['Harassment or Bullying', 'Spam or Deceptive', 'Inappropriate Username/Avatar', 'Abusive Behavior'].map((reason, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.menuOption}
+                onPress={() => {
+                  setIsReportVisible(false);
+                  toast.success(`User report submitted for: ${reason}`);
+                }}
+                activeOpacity={0.7}
+              >
+                <MaterialCommunityIcons name="flag-outline" size={18} color={colors.textSecondary} style={{ marginRight: 12 }} />
+                <Text style={[styles.menuOptionText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body }]}>
+                  {reason}
+                </Text>
+                <MaterialCommunityIcons name="chevron-right" size={16} color={colors.textSecondary} style={{ marginLeft: 'auto' }} />
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity
+              style={[styles.closeBtn, { borderColor: colors.border, backgroundColor: colors.background }]}
+              onPress={() => setIsReportVisible(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.closeBtnText, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+                CANCEL
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -250,7 +397,10 @@ const styles = StyleSheet.create({
   customHeader: {
     position: 'absolute',
     left: 16,
+    right: 16,
     zIndex: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   headerCircleBtn: {
     width: 38,
@@ -370,5 +520,58 @@ const styles = StyleSheet.create({
   badgeText: {
     fontSize: 11,
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'flex-end',
+  },
+  menuContainer: {
+    width: '100%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 1.5,
+    paddingTop: 12,
+    paddingHorizontal: 20,
+  },
+  pullHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  menuTitle: {
+    fontSize: 14,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  menuOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  menuOptionText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  closeBtn: {
+    borderWidth: 1.5,
+    borderRadius: 6,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  closeBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });
