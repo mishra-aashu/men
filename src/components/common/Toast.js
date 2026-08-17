@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Animated, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Animated, Dimensions, Platform } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
@@ -184,6 +184,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 8,
+    ...Platform.select({
+      web: {
+        maxWidth: 568,
+        alignSelf: 'center',
+        left: 'auto',
+        right: 'auto',
+        width: '100%',
+      },
+      default: {},
+    }),
   },
   container: {
     borderRadius: 16,

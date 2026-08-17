@@ -12,16 +12,14 @@ export default function CommunityCard({ community, isJoined, onJoinPress, onPres
       style={[
         styles.card,
         {
-          backgroundColor: colors.surface,
-          borderRadius: spacing.borderRadius.sm,
-          borderColor: isJoined ? colors.accent : colors.border,
-          borderWidth: 1.5,
-          padding: spacing.md,
-          marginBottom: spacing.md,
+          backgroundColor: 'transparent',
+          borderBottomWidth: 1,
+          borderBottomColor: colors.border,
+          paddingVertical: spacing.md,
         },
       ]}
       onPress={onPress}
-      activeOpacity={0.9}
+      activeOpacity={0.8}
     >
       <View style={styles.header}>
         <View style={[styles.iconContainer, { backgroundColor: colors.surfaceLight, borderRadius: spacing.borderRadius.xs }]}>
@@ -35,23 +33,16 @@ export default function CommunityCard({ community, isJoined, onJoinPress, onPres
             {community.memberCount} Members
           </Text>
         </View>
-        <Button
-          title={isJoined ? 'Joined' : 'Join'}
-          variant={isJoined ? 'secondary' : 'primary'}
-          onPress={onJoinPress}
-          style={styles.joinBtn}
-          textStyle={{ fontSize: 11, paddingVertical: 2 }}
-        />
+        {!isJoined && (
+          <Button
+            title="Join"
+            variant="primary"
+            onPress={onJoinPress}
+            style={styles.joinBtn}
+            textStyle={{ fontSize: 11, paddingVertical: 2 }}
+          />
+        )}
       </View>
-      <Text style={[styles.description, {
-        color: colors.textSecondary,
-        fontFamily: typography.fontFamily.body,
-        fontSize: typography.sizes.sm,
-        lineHeight: 20,
-        marginTop: spacing.sm,
-      }]}>
-        {community.description}
-      </Text>
     </TouchableOpacity>
   );
 }

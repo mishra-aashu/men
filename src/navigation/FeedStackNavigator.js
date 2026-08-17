@@ -1,5 +1,7 @@
 import React from 'react';
+import { TouchableOpacity } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import HomeFeedScreen from '../screens/Feed/HomeFeedScreen';
 import PostDetailScreen from '../screens/Feed/PostDetailScreen';
 import SearchScreen from '../screens/Feed/SearchScreen';
@@ -34,7 +36,18 @@ export default function FeedStackNavigator() {
       <Stack.Screen
         name="HomeFeed"
         component={HomeFeedScreen}
-        options={{ title: 'FEED' }}
+        options={({ navigation }) => ({
+          title: 'FEED',
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Search')}
+              style={{ marginRight: 8 }}
+              activeOpacity={0.7}
+            >
+              <MaterialCommunityIcons name="magnify" size={24} color={colors.textPrimary} />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <Stack.Screen
         name="PostDetail"

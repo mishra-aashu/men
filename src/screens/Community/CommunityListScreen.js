@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, SectionList, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 import CommunityCard from '../../components/community/CommunityCard';
@@ -9,6 +9,23 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function CommunityListScreen({ navigation }) {
   const { colors, typography, spacing } = useTheme();
   const { joinedCommunityIds, toggleJoinCommunity } = useUser();
+
+  const joinedCommunities = COMMUNITIES.filter((c) => joinedCommunityIds.includes(c.id));
+  const suggestedCommunities = COMMUNITIES.filter((c) => !joinedCommunityIds.includes(c.id));
+
+  const sections = [];
+  if (joinedCommunities.length > 0) {
+    sections.push({
+      title: 'MY CIRCLES',
+      data: joinedCommunities,
+    });
+  }
+  if (suggestedCommunities.length > 0) {
+    sections.push({
+      title: 'SUGGESTED CIRCLES',
+      data: suggestedCommunities,
+    });
+  }
 
   const renderCommunity = ({ item }) => {
     const isJoined = joinedCommunityIds.includes(item.id);
@@ -24,11 +41,30 @@ export default function CommunityListScreen({ navigation }) {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <FlatList
-        data={COMMUNITIES}
+      <SectionList
+        sections={sections}
         keyExtractor={(item) => item.id}
         renderItem={renderCommunity}
-        contentContainerStyle={{ padding: spacing.md, paddingBottom: spacing.xl + 40 }}
+        renderSectionHeader={({ section: { title } }) => {
+          const isFirst = sections[0]?.title === title;
+          return (
+            <Text style={[styles.sectionHeader, {
+              color: colors.accent,
+              fontFamily: typography.fontFamily.header,
+              fontSize: 11,
+              marginTop: isFirst ? spacing.md : spacing.xl + 12,
+              marginBottom: spacing.xs,
+              letterSpacing: 1.2,
+            }]}>
+              {title}
+            </Text>
+          );
+        }}
+        contentContainerStyle={{
+          paddingHorizontal: spacing.md,
+          paddingTop: 0,
+          paddingBottom: spacing.xl + 40,
+        }}
       />
 
       {/* Floating Action Button to Create Community */}
@@ -46,6 +82,9 @@ export default function CommunityListScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  sectionHeader: {
+    fontWeight: '800',
   },
   fab: {
     position: 'absolute',
