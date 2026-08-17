@@ -1,12 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useNavigation } from '@react-navigation/native';
+import { useToast } from '../../context/ToastContext';
 import Avatar from '../common/Avatar';
 import PostActions from './PostActions';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function PostCard({ post, onLike, onSave, onCommentPress, onReportPress, onCardPress }) {
   const { colors, typography, spacing } = useTheme();
+  const navigation = useNavigation();
+  const toast = useToast();
+
+  const handleProfilePress = () => {
+    if (!post.author || post.author === 'Anonymous Member' || post.avatar === 'anonymous') {
+      toast.info('Anonymous profiles are shielded to protect privacy.');
+    } else {
+      navigation.navigate('OtherUserProfile', { username: post.author, avatar: post.avatar });
+    }
+  };
 
   return (
     <Animated.View entering={FadeInDown.duration(400)}>
@@ -26,15 +38,21 @@ export default function PostCard({ post, onLike, onSave, onCommentPress, onRepor
       activeOpacity={0.9}
     >
       <View style={styles.header}>
-        <Avatar type={post.avatar} size={40} />
-        <View style={styles.headerInfo}>
-          <Text style={[styles.author, { color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.md }]}>
-            {post.author}
-          </Text>
-          <Text style={[styles.time, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs }]}>
-            {post.timestamp}
-          </Text>
-        </View>
+        <TouchableOpacity
+          style={styles.headerLeft}
+          onPress={handleProfilePress}
+          activeOpacity={0.7}
+        >
+          <Avatar type={post.avatar} size={40} />
+          <View style={styles.headerInfo}>
+            <Text style={[styles.author, { color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.md }]}>
+              {post.author}
+            </Text>
+            <Text style={[styles.time, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs }]}>
+              {post.timestamp}
+            </Text>
+          </View>
+        </TouchableOpacity>
         
         {/* Type Badge (Post / Advice) */}
         <View style={[styles.badge, {
@@ -101,6 +119,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   headerInfo: {
     marginLeft: 12,

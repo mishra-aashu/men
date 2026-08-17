@@ -1,12 +1,24 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
+import { useNavigation } from '@react-navigation/native';
+import { useToast } from '../../context/ToastContext';
 import Avatar from '../common/Avatar';
 import ReplyItem from './ReplyItem';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function CommentItem({ comment, onReply }) {
   const { colors, typography, spacing } = useTheme();
+  const navigation = useNavigation();
+  const toast = useToast();
+
+  const handleProfilePress = () => {
+    if (!comment.author || comment.author === 'Anonymous Member') {
+      toast.info('Anonymous profiles are shielded to protect privacy.');
+    } else {
+      navigation.navigate('OtherUserProfile', { username: comment.author, avatar: 'ninja' });
+    }
+  };
 
   return (
     <Animated.View
@@ -16,7 +28,9 @@ export default function CommentItem({ comment, onReply }) {
       <View style={{ flexDirection: 'row' }}>
         {/* Left Column: Avatar & Dynamic Connecting Line */}
         <View style={{ alignItems: 'center', width: 32 }}>
-          <Avatar type="anonymous" size={32} />
+          <TouchableOpacity onPress={handleProfilePress} activeOpacity={0.7}>
+            <Avatar type="anonymous" size={32} />
+          </TouchableOpacity>
           {comment.replies && comment.replies.length > 0 && (
             <View style={{ flex: 1, width: 1.5, backgroundColor: colors.border, marginTop: 8, marginBottom: 4 }} />
           )}
@@ -26,9 +40,11 @@ export default function CommentItem({ comment, onReply }) {
         <View style={{ flex: 1, marginLeft: 12 }}>
           {/* Header Info */}
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <Text style={[styles.author, { color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.sm }]}>
-              {comment.author}
-            </Text>
+            <TouchableOpacity onPress={handleProfilePress} activeOpacity={0.7}>
+              <Text style={[styles.author, { color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.sm }]}>
+                {comment.author}
+              </Text>
+            </TouchableOpacity>
             <Text style={[styles.time, { color: colors.textSecondary, fontFamily: typography.fontFamily.body, fontSize: typography.sizes.xs, marginLeft: 8 }]}>
               {comment.timestamp}
             </Text>

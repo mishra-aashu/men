@@ -4,6 +4,8 @@ import CommunityListScreen from '../screens/Community/CommunityListScreen';
 import CommunityDetailScreen from '../screens/Community/CommunityDetailScreen';
 import ThreadDetailScreen from '../screens/Community/ThreadDetailScreen';
 import CreateCommunityScreen from '../screens/Community/CreateCommunityScreen';
+import OtherUserProfileScreen from '../screens/Profile/OtherUserProfileScreen';
+import PostDetailScreen from '../screens/Feed/PostDetailScreen';
 import { useTheme } from '../context/ThemeContext';
 
 const Stack = createNativeStackNavigator();
@@ -51,6 +53,16 @@ export default function CommunityStackNavigator() {
         name="CreateCommunity"
         component={CreateCommunityScreen}
         options={{ title: 'NEW INITIATIVE' }}
+      />
+      <Stack.Screen
+        name="OtherUserProfile"
+        component={OtherUserProfileScreen}
+        options={{ title: 'CONTRIBUTOR' }}
+      />
+      <Stack.Screen
+        name="PostDetail"
+        component={PostDetailScreen}
+        options={{ title: 'CONVERSATION' }}
       />
     </Stack.Navigator>
   );

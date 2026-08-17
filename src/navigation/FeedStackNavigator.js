@@ -5,6 +5,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import HomeFeedScreen from '../screens/Feed/HomeFeedScreen';
 import PostDetailScreen from '../screens/Feed/PostDetailScreen';
 import SearchScreen from '../screens/Feed/SearchScreen';
+import OtherUserProfileScreen from '../screens/Profile/OtherUserProfileScreen';
 import { useTheme } from '../context/ThemeContext';
 
 const Stack = createNativeStackNavigator();
@@ -58,6 +59,11 @@ export default function FeedStackNavigator() {
         name="Search"
         component={SearchScreen}
         options={{ title: 'SEARCH' }}
+      />
+      <Stack.Screen
+        name="OtherUserProfile"
+        component={OtherUserProfileScreen}
+        options={{ title: 'CONTRIBUTOR' }}
       />
     </Stack.Navigator>
   );
