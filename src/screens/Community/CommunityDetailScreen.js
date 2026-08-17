@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ImageBackground, Modal } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import { useUser } from '../../context/UserContext';
 import { useToast } from '../../context/ToastContext';
@@ -252,92 +252,120 @@ export default function CommunityDetailScreen({ route, navigation }) {
         }
       />
 
-      {/* Dropdown Menu */}
-      {menuVisible && (
-        <>
-          <TouchableOpacity
-            style={StyleSheet.absoluteFill}
-            activeOpacity={1}
-            onPress={() => setMenuVisible(false)}
-          />
-          <View style={[styles.dropdownMenu, { top: (insets.top || 16) + 44, backgroundColor: colors.surface, borderColor: colors.border }]}>
+      {/* Circle Options Bottom Sheet Modal */}
+      <Modal
+        visible={menuVisible}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setMenuVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity style={StyleSheet.absoluteFill} onPress={() => setMenuVisible(false)} />
+          <View style={[styles.menuContainer, { backgroundColor: colors.surface, borderColor: colors.border, paddingBottom: insets.bottom || 16 }]}>
+            {/* Pull Handle */}
+            <View style={styles.pullHandle} />
+
+            <Text style={[styles.menuTitle, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+              {community?.name || 'CIRCLE OPTIONS'}
+            </Text>
+            
             {isJoined ? (
               <TouchableOpacity
-                style={[styles.menuItem, { paddingVertical: spacing.md, paddingHorizontal: spacing.md }]}
+                style={styles.menuOption}
                 onPress={() => {
                   setMenuVisible(false);
                   toggleJoinCommunity(communityId);
                   toast.success(`Left ${community.name}`);
                 }}
+                activeOpacity={0.7}
               >
-                <MaterialCommunityIcons name="circle-off-outline" size={18} color={colors.danger} style={{ marginRight: 12 }} />
-                <Text style={{ color: colors.danger, fontFamily: typography.fontFamily.body, fontSize: 13, fontWeight: '600' }}>
+                <MaterialCommunityIcons name="circle-off-outline" size={20} color={colors.danger} style={{ marginRight: 12 }} />
+                <Text style={[styles.menuOptionText, { color: colors.danger, fontFamily: typography.fontFamily.body }]}>
                   LEAVE CIRCLE
                 </Text>
+                <MaterialCommunityIcons name="chevron-right" size={16} color={colors.danger} style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                style={[styles.menuItem, { paddingVertical: spacing.md, paddingHorizontal: spacing.md }]}
+                style={styles.menuOption}
                 onPress={() => {
                   setMenuVisible(false);
                   toggleJoinCommunity(communityId);
                   toast.success(`Joined ${community.name}`);
                 }}
+                activeOpacity={0.7}
               >
-                <MaterialCommunityIcons name="plus-circle-outline" size={18} color={colors.accent} style={{ marginRight: 12 }} />
-                <Text style={{ color: colors.accent, fontFamily: typography.fontFamily.body, fontSize: 13, fontWeight: '600' }}>
+                <MaterialCommunityIcons name="plus-circle-outline" size={20} color={colors.accent} style={{ marginRight: 12 }} />
+                <Text style={[styles.menuOptionText, { color: colors.accent, fontFamily: typography.fontFamily.body }]}>
                   JOIN CIRCLE
                 </Text>
+                <MaterialCommunityIcons name="chevron-right" size={16} color={colors.accent} style={{ marginLeft: 'auto' }} />
               </TouchableOpacity>
             )}
 
             <TouchableOpacity
-              style={[styles.menuItem, { paddingVertical: spacing.md, paddingHorizontal: spacing.md }]}
+              style={styles.menuOption}
               onPress={() => {
                 setMenuVisible(false);
                 setIsMuted(!isMuted);
                 toast.success(isMuted ? 'Notifications unmuted' : 'Notifications muted');
               }}
+              activeOpacity={0.7}
             >
               <MaterialCommunityIcons
                 name={isMuted ? 'bell-outline' : 'bell-off-outline'}
-                size={18}
+                size={20}
                 color={colors.textPrimary}
                 style={{ marginRight: 12 }}
               />
-              <Text style={{ color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: 13 }}>
+              <Text style={[styles.menuOptionText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body }]}>
                 {isMuted ? 'UNMUTE CIRCLE' : 'MUTE CIRCLE'}
               </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.textSecondary} style={{ marginLeft: 'auto' }} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.menuItem, { paddingVertical: spacing.md, paddingHorizontal: spacing.md }]}
+              style={styles.menuOption}
               onPress={() => {
                 setMenuVisible(false);
                 toast.success('Circle link copied to clipboard.');
               }}
+              activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="share-variant" size={18} color={colors.textPrimary} style={{ marginRight: 12 }} />
-              <Text style={{ color: colors.textPrimary, fontFamily: typography.fontFamily.body, fontSize: 13 }}>
+              <MaterialCommunityIcons name="share-variant" size={20} color={colors.accent} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.textPrimary, fontFamily: typography.fontFamily.body }]}>
                 SHARE CIRCLE
               </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.textSecondary} style={{ marginLeft: 'auto' }} />
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.menuItem, { paddingVertical: spacing.md, paddingHorizontal: spacing.md }]}
+              style={styles.menuOption}
               onPress={() => {
                 setMenuVisible(false);
                 toast.success('Circle reported to moderators.');
               }}
+              activeOpacity={0.7}
             >
-              <MaterialCommunityIcons name="flag-outline" size={18} color={colors.danger} style={{ marginRight: 12 }} />
-              <Text style={{ color: colors.danger, fontFamily: typography.fontFamily.body, fontSize: 13 }}>
+              <MaterialCommunityIcons name="flag-outline" size={20} color={colors.danger} style={{ marginRight: 12 }} />
+              <Text style={[styles.menuOptionText, { color: colors.danger, fontFamily: typography.fontFamily.body }]}>
                 REPORT CIRCLE
+              </Text>
+              <MaterialCommunityIcons name="chevron-right" size={16} color={colors.danger} style={{ marginLeft: 'auto' }} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.closeBtn, { borderColor: colors.border, backgroundColor: colors.background }]}
+              onPress={() => setMenuVisible(false)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.closeBtnText, { color: colors.textPrimary, fontFamily: typography.fontFamily.header }]}>
+                CLOSE
               </Text>
             </TouchableOpacity>
           </View>
-        </>
-      )}
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -506,21 +534,57 @@ const styles = StyleSheet.create({
   ruleText: {
     lineHeight: 18,
   },
-  dropdownMenu: {
-    position: 'absolute',
-    right: 16,
-    width: 200,
-    borderRadius: 8,
-    borderWidth: 1,
-    zIndex: 1000,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 8,
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'flex-end',
   },
-  menuItem: {
+  menuContainer: {
+    width: '100%',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 1.5,
+    paddingTop: 12,
+    paddingHorizontal: 20,
+  },
+  pullHandle: {
+    width: 40,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+  menuTitle: {
+    fontSize: 14,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  menuOption: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  menuOptionText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  closeBtn: {
+    borderWidth: 1.5,
+    borderRadius: 6,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 16,
+    marginBottom: 12,
+  },
+  closeBtnText: {
+    fontSize: 11,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });
