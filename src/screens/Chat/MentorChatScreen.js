@@ -66,7 +66,7 @@ export default function MentorChatScreen({ navigation }) {
         <Button
           title="UNLOCK MENTOR SUPPORT"
           variant="primary"
-          onPress={() => navigation.navigate('Subscription')}
+          onPress={() => navigation.navigate('ProfileTab', { screen: 'Subscription' })}
           style={{ marginTop: spacing.md }}
         />
       </View>
